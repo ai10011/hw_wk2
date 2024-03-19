@@ -56,17 +56,35 @@ class Main {
      */
     public static ArrayList<Obstacle> parseObstacles(HashMap<String, ArrayList<String>> parsedArgs) {
         ArrayList<Obstacle> obstacles = new ArrayList<>();
-        ObstacleType type = ObstacleType.GUARD;
-        String key = "-" + type.getArgumentName();
-        ArrayList<String> args = parsedArgs.get(key);
-        if (args == null) {
-            return obstacles;
-        }
-        for (String arg : args) {
-            // Remove the parentheses from the argument
-            String cleanedArg = stripParentheses(arg);
-            Obstacle obstacle = Guard.parse(cleanedArg);
-            obstacles.add(obstacle);
+        for (ObstacleType type : ObstacleType.values()) {
+            String key = "-" + type.getArgumentName();
+            ArrayList<String> args = parsedArgs.get(key);
+            if (args == null) {
+                continue;
+            }
+            for (String arg : args) {
+                // Remove the parentheses from the argument
+                String cleanedArg = stripParentheses(arg);
+                Obstacle obstacle;
+                switch (type) {
+                    case GUARD :
+                        obstacle = Guard.parse(cleanedArg);
+                        obstacles.add(obstacle);
+                        break;
+                    case FENCE :
+                        obstacle = Fence.parse(cleanedArg);
+                        obstacles.add(obstacle);
+                        break;
+                    case SENSOR :
+                        obstacle = Sensor.parse(cleanedArg);
+                        obstacles.add(obstacle);
+                        break;
+                    case CAMERA :
+                        obstacle = Camera.parse(cleanedArg);
+                        obstacles.add(obstacle);
+                    break;
+                };
+            }
         }
         return obstacles;
     }
